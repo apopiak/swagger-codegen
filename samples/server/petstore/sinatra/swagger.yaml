@@ -106,11 +106,11 @@ paths:
         type: "array"
         items:
           type: "string"
-          default: "available"
           enum:
           - "available"
           - "pending"
           - "sold"
+          default: "available"
         collectionFormat: "csv"
       responses:
         200:
@@ -615,7 +615,7 @@ definitions:
         format: "int64"
       name:
         type: "string"
-    title: "Pet catehgry"
+    title: "Pet category"
     description: "A category for a pet"
     xml:
       name: "Category"

@@ -11,6 +11,8 @@ Method | HTTP request | Description
 [**TestClientModel**](FakeApi.md#testclientmodel) | **PATCH** /fake | To test \&quot;client\&quot; model
 [**TestEndpointParameters**](FakeApi.md#testendpointparameters) | **POST** /fake | Fake endpoint for testing various parameters 假端點 偽のエンドポイント 가짜 엔드 포인트 
 [**TestEnumParameters**](FakeApi.md#testenumparameters) | **GET** /fake | To test enum parameters
+[**TestInlineAdditionalProperties**](FakeApi.md#testinlineadditionalproperties) | **POST** /fake/inline-additionalProperties | test inline additionalProperties
+[**TestJsonFormData**](FakeApi.md#testjsonformdata) | **GET** /fake/jsonFormData | test json serialization of form data
 
 
 <a name="fakeouterbooleanserialize"></a>
@@ -35,7 +37,6 @@ namespace Example
     {
         public void main()
         {
-            
             var apiInstance = new FakeApi();
             var body = new OuterBoolean(); // OuterBoolean | Input boolean as post body (optional) 
 
@@ -96,7 +97,6 @@ namespace Example
     {
         public void main()
         {
-            
             var apiInstance = new FakeApi();
             var body = new OuterComposite(); // OuterComposite | Input composite as post body (optional) 
 
@@ -157,7 +157,6 @@ namespace Example
     {
         public void main()
         {
-            
             var apiInstance = new FakeApi();
             var body = new OuterNumber(); // OuterNumber | Input number as post body (optional) 
 
@@ -218,7 +217,6 @@ namespace Example
     {
         public void main()
         {
-            
             var apiInstance = new FakeApi();
             var body = new OuterString(); // OuterString | Input string as post body (optional) 
 
@@ -279,7 +277,6 @@ namespace Example
     {
         public void main()
         {
-            
             var apiInstance = new FakeApi();
             var body = new ModelClient(); // ModelClient | client model
 
@@ -341,13 +338,12 @@ namespace Example
     {
         public void main()
         {
-            
             // Configure HTTP basic authorization: http_basic_test
             Configuration.Default.Username = "YOUR_USERNAME";
             Configuration.Default.Password = "YOUR_PASSWORD";
 
             var apiInstance = new FakeApi();
-            var number = 3.4;  // decimal? | None
+            var number = 8.14;  // decimal? | None
             var _double = 1.2;  // double? | None
             var patternWithoutDelimiter = patternWithoutDelimiter_example;  // string | None
             var _byte = B;  // byte[] | None
@@ -432,7 +428,6 @@ namespace Example
     {
         public void main()
         {
-            
             var apiInstance = new FakeApi();
             var enumFormStringArray = new List<string>(); // List<string> | Form parameter enum test (string array) (optional) 
             var enumFormString = enumFormString_example;  // string | Form parameter enum test (string) (optional)  (default to -efg)
@@ -482,6 +477,124 @@ No authorization required
 
  - **Content-Type**: */*
  - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+<a name="testinlineadditionalproperties"></a>
+# **TestInlineAdditionalProperties**
+> void TestInlineAdditionalProperties (Object param)
+
+test inline additionalProperties
+
+### Example
+```csharp
+using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class TestInlineAdditionalPropertiesExample
+    {
+        public void main()
+        {
+            var apiInstance = new FakeApi();
+            var param = ;  // Object | request body
+
+            try
+            {
+                // test inline additionalProperties
+                apiInstance.TestInlineAdditionalProperties(param);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling FakeApi.TestInlineAdditionalProperties: " + e.Message );
+            }
+        }
+    }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **param** | **Object**| request body | 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+<a name="testjsonformdata"></a>
+# **TestJsonFormData**
+> void TestJsonFormData (string param, string param2)
+
+test json serialization of form data
+
+### Example
+```csharp
+using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class TestJsonFormDataExample
+    {
+        public void main()
+        {
+            var apiInstance = new FakeApi();
+            var param = param_example;  // string | field1
+            var param2 = param2_example;  // string | field2
+
+            try
+            {
+                // test json serialization of form data
+                apiInstance.TestJsonFormData(param, param2);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling FakeApi.TestJsonFormData: " + e.Message );
+            }
+        }
+    }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **param** | **string**| field1 | 
+ **param2** | **string**| field2 | 
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

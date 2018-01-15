@@ -2,10 +2,9 @@ package io.swagger.api;
 
 import java.math.BigDecimal;
 import io.swagger.model.Client;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.OffsetDateTime;
 import io.swagger.model.OuterComposite;
-
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,8 +13,7 @@ import java.util.List;
 
 /**
  * A delegate to be called by the {@link FakeApiController}}.
- * Should be implemented as a controller but without the {@link org.springframework.stereotype.Controller} annotation.
- * Instead, use spring to autowire this class into the {@link FakeApiController}.
+ * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
  */
 
 public interface FakeApiDelegate {
@@ -59,7 +57,7 @@ public interface FakeApiDelegate {
         String string,
         byte[] binary,
         LocalDate date,
-        DateTime dateTime,
+        OffsetDateTime dateTime,
         String password,
         String paramCallback);
 
@@ -74,5 +72,16 @@ public interface FakeApiDelegate {
         String enumQueryString,
         Integer enumQueryInteger,
         Double enumQueryDouble);
+
+    /**
+     * @see FakeApi#testInlineAdditionalProperties
+     */
+    ResponseEntity<Void> testInlineAdditionalProperties(Object param);
+
+    /**
+     * @see FakeApi#testJsonFormData
+     */
+    ResponseEntity<Void> testJsonFormData(String param,
+        String param2);
 
 }

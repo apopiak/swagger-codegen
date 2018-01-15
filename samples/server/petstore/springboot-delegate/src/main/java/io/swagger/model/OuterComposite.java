@@ -6,10 +6,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
+import org.springframework.validation.annotation.Validated;
+import javax.validation.Valid;
 import javax.validation.constraints.*;
+
 /**
  * OuterComposite
  */
+@Validated
 
 public class OuterComposite   {
   @JsonProperty("my_number")
@@ -26,11 +30,14 @@ public class OuterComposite   {
     return this;
   }
 
-   /**
+  /**
    * Get myNumber
    * @return myNumber
   **/
   @ApiModelProperty(value = "")
+
+  @Valid
+
   public BigDecimal getMyNumber() {
     return myNumber;
   }
@@ -44,11 +51,13 @@ public class OuterComposite   {
     return this;
   }
 
-   /**
+  /**
    * Get myString
    * @return myString
   **/
   @ApiModelProperty(value = "")
+
+
   public String getMyString() {
     return myString;
   }
@@ -62,11 +71,13 @@ public class OuterComposite   {
     return this;
   }
 
-   /**
+  /**
    * Get myBoolean
    * @return myBoolean
   **/
   @ApiModelProperty(value = "")
+
+
   public Boolean getMyBoolean() {
     return myBoolean;
   }
