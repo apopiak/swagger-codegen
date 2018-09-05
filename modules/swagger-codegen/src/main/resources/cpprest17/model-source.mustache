@@ -226,44 +226,9 @@ void {{classname}}::fromJson(const web::json::value& val)
         std::vector<web::json::value> jsonArray;
         {{#required}}
         {{baseName}}.clear();
-        for (auto& item : val.at(utility::conversions::to_string_t("{{baseName}}")).as_array())
-        {
-            utility::string_t key;
-            if(item.has_field(utility::conversions::to_string_t("key")))
-            {
-                key = ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("key")));
-            }
-            {{#items.isPrimitiveType}}
-            {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::{{items.baseType}}FromJson(item.at(utility::conversions::to_string_t("value")))));
-            {{/items.isPrimitiveType}}
-            {{^items.isPrimitiveType}}
-            {{#items.isString}}
-            {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("value")))));
-            {{/items.isString}}
-            {{^items.isString}}
-            {{#items.isDateTime}}
-            {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::dateFromJson(item.at(utility::conversions::to_string_t("value")))));
-            {{/items.isDateTime}}
-            {{^items.isDateTime}}
-            if(item.is_null())
-            {
-                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, {{{items.datatype}}}(nullptr) ));
-            }
-            else
-            {
-                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, {{items.datatype}}::modelFromJson(item.at(utility::conversions::to_string_t("value")))));
-            }
-            {{/items.isDateTime}}
-            {{/items.isString}}
-            {{/items.isPrimitiveType}}
-        }
-        {{/required}}
-        {{^required}}
-        {{baseName}} = std::nullopt;
-        if (val.has_field(utility::conversions::to_string_t("{{baseName}}")))
-        {
-            {{baseName}} = {{{datatype}}}();
-            for (auto& item : val.at(utility::conversions::to_string_t("{{baseName}}")).as_array())
+        const auto & container = val.at(utility::conversions::to_string_t("{{baseName}}"));
+        if (container.is_array()) {
+            for (const auto& item : container.as_array())
             {
                 utility::string_t key;
                 if(item.has_field(utility::conversions::to_string_t("key")))
@@ -271,24 +236,105 @@ void {{classname}}::fromJson(const web::json::value& val)
                     key = ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("key")));
                 }
                 {{#items.isPrimitiveType}}
-                {{baseName}}->insert(std::make_pair( key, ModelBase::{{items.baseType}}FromJson(item.at(utility::conversions::to_string_t("value")))));
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::{{items.baseType}}FromJson(item.at(utility::conversions::to_string_t("value")))));
                 {{/items.isPrimitiveType}}
                 {{^items.isPrimitiveType}}
                 {{#items.isString}}
-                {{baseName}}->insert(std::make_pair( key, ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("value")))));
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("value")))));
                 {{/items.isString}}
                 {{^items.isString}}
                 {{#items.isDateTime}}
-                {{baseName}}->insert(std::make_pair( key, ModelBase::dateFromJson(item.at(utility::conversions::to_string_t("value")))));
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::dateFromJson(item.at(utility::conversions::to_string_t("value")))));
                 {{/items.isDateTime}}
                 {{^items.isDateTime}}
-                if (!item.is_null())
+                if(item.is_null())
                 {
-                    {{baseName}}->insert(std::make_pair( key, {{items.datatype}}::modelFromJson(item.at(utility::conversions::to_string_t("value")))));
+                    {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, {{{items.datatype}}}(nullptr) ));
+                }
+                else
+                {
+                    {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, {{items.datatype}}::modelFromJson(item.at(utility::conversions::to_string_t("value")))));
                 }
                 {{/items.isDateTime}}
                 {{/items.isString}}
                 {{/items.isPrimitiveType}}
+            }
+        } else { // container should be a json object
+            for (const auto& item : container.as_object()) {
+                const auto [key, value] = item;
+                {{#items.isPrimitiveType}}
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::{{items.baseType}}FromJson(value)));
+                {{/items.isPrimitiveType}}
+                {{^items.isPrimitiveType}}
+                {{#items.isString}}
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::stringFromJson(value)));
+                {{/items.isString}}
+                {{^items.isString}}
+                {{#items.isDateTime}}
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, ModelBase::dateFromJson(value)));
+                {{/items.isDateTime}}
+                {{^items.isDateTime}}
+                {{baseName}}.insert(std::pair<utility::string_t,{{{items.datatype}}}>( key, {{items.datatype}}::modelFromJson(value)));
+                {{/items.isDateTime}}
+                {{/items.isString}}
+                {{/items.isPrimitiveType}}
+            }
+        }
+        {{/required}}
+        {{^required}}
+        {{baseName}} = std::nullopt;
+        if (val.has_field(utility::conversions::to_string_t("{{baseName}}")))
+        {
+            {{baseName}} = {{{datatype}}}();
+            const auto & container = val.at(utility::conversions::to_string_t("{{baseName}}"));
+            if (container.is_array()) {
+                for (const auto& item : container.as_array())
+                {
+                    utility::string_t key;
+                    if(item.has_field(utility::conversions::to_string_t("key")))
+                    {
+                        key = ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("key")));
+                    }
+                    {{#items.isPrimitiveType}}
+                    {{baseName}}->insert(std::make_pair( key, ModelBase::{{items.baseType}}FromJson(item.at(utility::conversions::to_string_t("value")))));
+                    {{/items.isPrimitiveType}}
+                    {{^items.isPrimitiveType}}
+                    {{#items.isString}}
+                    {{baseName}}->insert(std::make_pair( key, ModelBase::stringFromJson(item.at(utility::conversions::to_string_t("value")))));
+                    {{/items.isString}}
+                    {{^items.isString}}
+                    {{#items.isDateTime}}
+                    {{baseName}}->insert(std::make_pair( key, ModelBase::dateFromJson(item.at(utility::conversions::to_string_t("value")))));
+                    {{/items.isDateTime}}
+                    {{^items.isDateTime}}
+                    if (!item.is_null())
+                    {
+                        {{baseName}}->insert(std::make_pair( key, {{items.datatype}}::modelFromJson(item.at(utility::conversions::to_string_t("value")))));
+                    }
+                    {{/items.isDateTime}}
+                    {{/items.isString}}
+                    {{/items.isPrimitiveType}}
+                }
+            } else { // container should be a json object
+              for (const auto& item : container.as_object()) {
+                  const auto [key, value] = item;
+                  {{#items.isPrimitiveType}}
+                  {{baseName}}->insert(std::make_pair( key, ModelBase::{{items.baseType}}FromJson(value)));
+                  {{/items.isPrimitiveType}}
+                  {{^items.isPrimitiveType}}
+                  {{#items.isString}}
+                  {{baseName}}->insert(std::make_pair( key, ModelBase::stringFromJson(value)));
+                  {{/items.isString}}
+                  {{^items.isString}}
+                  {{#items.isDateTime}}
+                  {{baseName}}->insert(std::make_pair( key, ModelBase::dateFromJson(value)));
+                  {{/items.isDateTime}}
+                  {{^items.isDateTime}}
+                  {{baseName}}->insert(std::make_pair( key, {{items.datatype}}::modelFromJson(value)));
+                  {{/items.isDateTime}}
+                  {{/items.isString}}
+                  {{/items.isPrimitiveType}}
+              }
             }
         }
         {{/required}}
