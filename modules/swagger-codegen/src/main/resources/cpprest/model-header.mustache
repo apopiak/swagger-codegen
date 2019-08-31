@@ -20,6 +20,7 @@
 namespace {{this}} {
 {{/modelNamespaceDeclarations}}
 
+
 /// <summary>
 /// {{description}}
 /// </summary>
@@ -36,10 +37,10 @@ public:
     void validate() override;
 
     web::json::value toJson() const override;
-    void fromJson(web::json::value& json) override;
+    void fromJson(const web::json::value& json) override;
 
-    void toMultipart(std::shared_ptr<MultipartFormData> multipart, const utility::string_t& namePrefix) const override;
-    void fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const utility::string_t& namePrefix) override;
+    static const char *dtoName() { return "swagger::dto::{{classname}}"; }
+    static {{classname}} create(const web::json::value& json);
 
     /////////////////////////////////////////////
     /// {{classname}} members
@@ -49,9 +50,15 @@ public:
     /// <summary>
     /// {{description}}
     /// </summary>
-    {{^isNotContainer}}{{{datatype}}}& {{getter}}();
-    {{/isNotContainer}}{{#isNotContainer}}{{{datatype}}} {{getter}}() const;
-    {{/isNotContainer}}{{^required}}bool {{nameInCamelCase}}IsSet() const;
+    {{^isNotContainer}}
+    {{{datatype}}}& {{getter}}();
+    const {{{datatype}}}& {{getter}}() const;
+    {{/isNotContainer}}
+    {{#isNotContainer}}
+    {{{datatype}}} {{getter}}() const;
+    {{/isNotContainer}}
+    {{^required}}
+    bool {{nameInCamelCase}}IsSet() const;
     void unset{{name}}();
     {{/required}}
     void {{setter}}({{{datatype}}} value);

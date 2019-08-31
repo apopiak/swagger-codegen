@@ -8,16 +8,34 @@
 #ifndef {{modelHeaderGuardPrefix}}_ModelBase_H_
 #define {{modelHeaderGuardPrefix}}_ModelBase_H_
 
-{{{defaultInclude}}}
+#include <exception>
+
 #include "HttpContent.h"
-#include "MultipartFormData.h"
 
 #include <cpprest/details/basic_types.h>
 #include <cpprest/json.h>
+{{{defaultInclude}}}
 
 {{#modelNamespaceDeclarations}}
 namespace {{this}} {
 {{/modelNamespaceDeclarations}}
+
+struct ptr_is_null : std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
+
+template <class T>
+struct when_shared_ptr {
+    static void verify_not_null_or_throw(const T& value) {}
+};
+template <class T>
+struct when_shared_ptr<std::shared_ptr<T>> {
+    static void verify_not_null_or_throw(const std::shared_ptr<T>& value) {
+        if (!value) {
+            throw ptr_is_null("shared pointer is null");
+        }
+    }
+};
 
 class {{declspec}} ModelBase
 {
@@ -28,10 +46,7 @@ public:
     virtual void validate() = 0;
 
     virtual web::json::value toJson() const = 0;
-    virtual void fromJson(web::json::value& json) = 0;
-
-    virtual void toMultipart(std::shared_ptr<MultipartFormData> multipart, const utility::string_t& namePrefix) const = 0;
-    virtual void fromMultiPart(std::shared_ptr<MultipartFormData> multipart, const utility::string_t& namePrefix) = 0;
+    virtual void fromJson(const web::json::value& json) = 0;
 
     static web::json::value toJson( const utility::string_t& value );
     static web::json::value toJson( const utility::datetime& value );
@@ -42,14 +57,14 @@ public:
     static web::json::value toJson( double value );
     static web::json::value toJson( bool value );
 
-    static int64_t int64_tFromJson(web::json::value& val);
-    static int32_t int32_tFromJson(web::json::value& val);
-    static float floatFromJson(web::json::value& val);
-    static utility::string_t stringFromJson(web::json::value& val);
-    static utility::datetime dateFromJson(web::json::value& val);
-    static double doubleFromJson(web::json::value& val);
-    static bool boolFromJson(web::json::value& val);
-    static std::shared_ptr<HttpContent> fileFromJson(web::json::value& val);
+    static int64_t int64_tFromJson(const web::json::value& val);
+    static int32_t int32_tFromJson(const web::json::value& val);
+    static float floatFromJson(const web::json::value& val);
+    static utility::string_t stringFromJson(const web::json::value& val);
+    static utility::datetime dateFromJson(const web::json::value& val);
+    static double doubleFromJson(const web::json::value& val);
+    static bool boolFromJson(const web::json::value& val);
+    static std::shared_ptr<HttpContent> fileFromJson(const web::json::value& val);
 
     static std::shared_ptr<HttpContent> toHttpContent( const utility::string_t& name, const utility::string_t& value, const utility::string_t& contentType = utility::conversions::to_string_t(""));
     static std::shared_ptr<HttpContent> toHttpContent( const utility::string_t& name, const utility::datetime& value, const utility::string_t& contentType = utility::conversions::to_string_t(""));
